@@ -36,7 +36,7 @@ class S7Client(Base):
         self._port = port
         self._slot = slot
         self._src_tsap = src_tsap
-        self._dst_tsap = '\x01' + struct.pack('B', rack * 0x20 + slot)
+        self._dst_tsap = b'\x01' + struct.pack('B', rack * 0x20 + slot)
         self._pdur = 1
         self.protect_level = None
         self._connection = None
@@ -205,7 +205,7 @@ class S7Client(Base):
             self.logger.error("Password length must between 1 to 8")
             return None
         else:
-            password += '20'.decode('hex') * (8 - len(password))
+            password += b'\x20' * (8 - len(password))
             for i in range(8):
                 if i < 2:
                     temp_data = ord(password[i])
