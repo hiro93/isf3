@@ -416,7 +416,7 @@ def pprint_dict_in_order(dictionary, order=None):
         else:
             print_info(body)
 
-    keys = dictionary.keys()
+    keys = list(dictionary.keys())
     for element in order:
         try:
             key = keys.pop(keys.index(element))

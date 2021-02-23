@@ -83,7 +83,7 @@ class BaseInterpreter(object):
         printer_queue.join()
         while True:
             try:
-                command, args = self.parse_line(raw_input(self.prompt))
+                command, args = self.parse_line(input(self.prompt))
                 if not command:
                     continue
                 command_handler = self.get_command_handler(command)
@@ -239,7 +239,8 @@ ICS Exploits:
 
     @property
     def module_metadata(self):
-        return getattr(self.current_module, "_{}__info__".format(self.current_module.__class__.__name__))
+        return getattr(self.current_module, '__info__', {})
+        # return getattr(self.current_module, "_{}__info__".format(self.current_module.__class__.__name__))
 
     @property
     def prompt(self):
@@ -318,7 +319,7 @@ ICS Exploits:
         try:
             self.current_module = utils.import_exploit(module_path)()
         except icssploitException as err:
-            utils.print_error(err.message)
+            utils.print_error(err)
 
     @utils.stop_after(2)
     def complete_use(self, text, *args, **kwargs):
@@ -432,7 +433,7 @@ ICS Exploits:
     @utils.module_required
     def _show_devices(self, *args, **kwargs):  # TODO: cover with tests
         try:
-            devices = self.current_module._Exploit__info__['devices']
+            devices = self.current_module.__info__['devices']
 
             utils.print_info("\nTarget devices:")
             i = 0
@@ -466,10 +467,11 @@ ICS Exploits:
         sub_command = args[0]
         try:
             getattr(self, "_show_{}".format(sub_command))(*args, **kwargs)
-        except AttributeError:
+        except AttributeError as e:
             utils.print_error("Unknown 'show' sub-command '{}'. "
                               "What do you want to show?\n"
                               "Possible choices are: {}".format(sub_command, self.show_sub_commands))
+            raise e
 
     @utils.stop_after(2)
     def complete_show(self, text, *args, **kwargs):

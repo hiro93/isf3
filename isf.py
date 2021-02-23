@@ -5,12 +5,13 @@ from __future__ import print_function
 import argparse
 import logging.handlers
 import os
-import ConfigParser
+from configparser import ConfigParser
+
 from icssploit.interpreter import IcssploitInterpreter
 
 # Define conf
 isf_conf_file = "isf.ini"
-isf_conf = ConfigParser.SafeConfigParser(allow_no_value=True)
+isf_conf = ConfigParser(allow_no_value=True)
 isf_conf.read(isf_conf_file)
 
 # Get parameter from conf
